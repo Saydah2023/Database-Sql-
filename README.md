@@ -1,5 +1,6 @@
 
 Database and SQL Repository Overview:
+
   -Focuses on activities demonstrating SQLite and SQL magic usage.
   -Utilizes SQLite, a lightweight, embedded database system.
   -SQL magic enables direct SQL execution in environments like Jupyter notebooks.
