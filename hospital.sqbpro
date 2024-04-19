@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/a.alsakkaf/Downloads/hospital.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="browser structure pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1000"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainDoctor"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Doctor" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="46"/><column index="2" value="67"/><column index="3" value="74"/><column index="4" value="83"/><column index="5" value="74"/><column index="6" value="40"/><column index="7" value="67"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Hospital" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="2" mode="0"/></sort><column_widths><column index="1" value="40"/><column index="2" value="128"/><column index="3" value="70"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">--How many Elementary Schools are in the dataset
+SELECT count(*) FROM ChicagoPublicSchools WHERE ElementaryMiddleorHighSchool = 'ES';    
+--Correct answer: 462
+
+--What is the highest Safety Score?
+SELECT MAX(Safety_Score) AS MAX_SAFETY_SCORE FROM ChicagoPublicSchools;
+--Correct answer: 99
+
+--Which schools have highest Safety Score?
+ select Name_of_School, Safety_Score from ChicagoPublicSchools where Safety_Score = 99;
+
+--or, a better way:
+
+-- select Name_of_School, Safety_Score from ChicagoPublicSchools where 
+  --Safety_Score= (select MAX(Safety_Score) from ChicagoPublicSchools
+
+--Correct answer: several schools with with Safety Score of 99.
+
+--What are the top 10 schools with the highest &quot;Average Student Attendance&quot;?
+select Name_of_School, Average_Student_Attendance from ChicagoPublicSchools
+    order by Average_Student_Attendance desc nulls last limit 10;
+	--Retrieve the list of 5 Schools with the lowest Average Student Attendance sorted in ascending order based on attendance
+	SELECT Name_of_School, Average_Student_Attendance from ChicagoPublicSchools 
+     order by Average_Student_Attendance LIMIT 5;
+--Now remove the '%' sign from the above result set for Average Student Attendance column
+SELECT Name_of_School, REPLACE(Average_Student_Attendance, '%', '') from ChicagoPublicSchools
+     order by Average_Student_Attendance LIMIT 5;
+--Which Schools have Average Student Attendance lower than 70%?
+select Name_of_School,Average_Student_Attendance from ChicagoPublicSchools where AVERAGE_STUDENT_ATTENDANCE &lt;'70.00%';
+--Get the total College Enrollment for each Community Area¶
+select Community_Area_Name, sum(College_Enrollment) AS TOTAL_ENROLLMENT
+   from ChicagoPublicSchools
+   group by Community_Area_Name ;
+--Get the 5 Community Areas with the least total College Enrollment  sorted in ascending order
+select Community_Area_Name, sum(College_Enrollment) AS TOTAL_ENROLLMENT 
+   from ChicagoPublicSchools
+   group by Community_Area_Name 
+   order by TOTAL_ENROLLMENT asc 
+   LIMIT 5 ;
+   --List 5 schools with lowest safety score.
+   select NAME_OF_SCHOOL ,SAFETY_SCORE as Lowest_safety_score  from ChicagoPublicSchools 
+    where safety_score !='None'
+    order by SAFETY_SCORE asc
+	 LIMIT 5  ;
+	 --Get the hardship index for the community area which has College Enrollment of 4368
+	 select hardship_index from ChicagoPublicSchools CPS 
+         where  college_enrollment = 4368;
+/*select hardship_index from CENSUS_DATA CD, CHICAGO_PUBLIC_SCHOOLS_DATA CPS 
+where CD.community_area_number = CPS.community_area_number 
+and college_enrollment = 4368*\
+
+--Get the hardship index for the community area which has the highest value for College Enrollment
+select community_area_number, community_area_name, hardship_index from CENSUS_DATA \
+   where community_area_number in 
+   ( select community_area_number from CHICAGO_PUBLIC_SCHOOLS_DATA order by college_enrollment desc limit 1 )
+--&gt;</sql><sql name="HR_ACTITES">SELECT F_NAME, L_NAME FROM EMPLOYEES
+WHERE ADDRESS LIKE '%Elgin,IL%';
+
+SELECT F_NAME, L_NAME
+FROM EMPLOYEES
+WHERE B_DATE LIKE '197%';
+
+SELECT *
+FROM EMPLOYEES
+WHERE (SALARY BETWEEN 60000 AND 70000) AND DEP_ID = 5;
+
+SELECT F_NAME, L_NAME, DEP_ID 
+FROM EMPLOYEES
+ORDER BY DEP_ID;
+
+
+SELECT F_NAME, L_NAME, DEP_ID 
+FROM EMPLOYEES
+ORDER BY DEP_ID DESC, L_NAME DESC;
+
+
+SELECT DEP_ID, COUNT(*)
+FROM EMPLOYEES
+GROUP BY DEP_ID;
+
+SELECT DEP_ID, COUNT(*), AVG(SALARY)
+FROM EMPLOYEES
+GROUP BY DEP_ID;
+
+SELECT DEP_ID, COUNT(*) AS &quot;NUM_EMPLOYEES&quot;, AVG(SALARY) AS &quot;AVG_SALARY&quot;
+FROM EMPLOYEES
+GROUP BY DEP_ID;
+
+SELECT DEP_ID, COUNT(*) AS &quot;NUM_EMPLOYEES&quot;, AVG(SALARY) AS &quot;AVG_SALARY&quot;
+FROM EMPLOYEES
+GROUP BY DEP_ID
+ORDER BY AVG_SALARY;
+
+SELECT DEP_ID, COUNT(*) AS &quot;NUM_EMPLOYEES&quot;, AVG(SALARY) AS &quot;AVG_SALARY&quot;
+FROM EMPLOYEES
+GROUP BY DEP_ID
+HAVING count(*) &lt; 4
+ORDER BY AVG_SALARY;
+
+
+SELECT F_NAME, L_NAME
+FROM EMPLOYEES
+WHERE F_NAME LIKE 'S%';
+
+
+SELECT *
+FROM EMPLOYEES
+ORDER BY B_DATE;
+
+SELECT DEP_ID, AVG(SALARY)
+FROM EMPLOYEES
+GROUP BY DEP_ID
+HAVING AVG(SALARY) &gt;= 60000;
+
+
+SELECT DEP_ID, AVG(SALARY)
+FROM EMPLOYEES
+GROUP BY DEP_ID
+HAVING AVG(SALARY) &gt;= 60000;</sql><sql name="SQL 7">drop table if exists PETRESCUE;
+
+create table PETRESCUE (
+	ID INTEGER NOT NULL,
+	ANIMAL VARCHAR(20),
+	QUANTITY INTEGER,
+	COST DECIMAL(6,2),
+	RESCUEDATE DATE,
+	PRIMARY KEY (ID)
+	);
+
+insert into PETRESCUE values 
+	(1,'Cat',9,450.09,'2018-05-29'),
+	(2,'Dog',3,666.66,'2018-06-01'),
+	(3,'Dog',1,100.00,'2018-06-04'),
+	(4,'Parrot',2,50.00,'2018-06-04'),
+	(5,'Dog',1,75.75,'2018-06-10'),
+	(6,'Hamster',6,60.60,'2018-06-11'),
+	(7,'Cat',1,44.44,'2018-06-11'),
+	(8,'Goldfish',24,48.48,'2018-06-14'),
+	(9,'Dog',2,222.22,'2018-06-15')
+	
+;
+
+
+SELECT SUM(COST) FROM PETRESCUE;
+SELECT SUM(COST) AS SUM_OF_COST FROM PETRESCUE;
+SELECT MAX(QUANTITY) FROM PETRESCUE;
+SELECT MIN(QUANTITY) FROM PETRESCUE;
+SELECT AVG(COST) FROM PETRESCUE;
+ --Write a query that displays the rounded integral cost of each rescue.
+
+ SELECT ROUND(COST) FROM PETRESCUE;
+ SELECT ROUND(COST, 0) FROM PETRESCUE;
+ --In case the question was to round the value to 2 decimal places, the query would change to:
+
+--The output of this query will be the length of each element in the column. The query for this question can be written as:
+
+
+SELECT LENGTH(ANIMAL) FROM PETRESCUE;
+--The output of this query will be each element in the column in upper case letters. The query for this question can be written as: 
+
+SELECT UCASE(ANIMAL) FROM PETRESCUE;
+--ust as easily, the user could ask for a lower case representation, and the query would be changed to:
+
+SELECT LCASE(ANIMAL) FROM PETRESCUE;
+--The output of this query will be only the DAY part of the date in the column. The query for this question can be written as:
+
+SELECT DAY(RESCUEDATE) FROM PETRESCUE;
+--In case the query was asking for MONTH of rescue, the query would change to:
+
+SELECT MONTH(RESCUEDATE) FROM PETRESCUE;
+-- year
+SELECT YEAR(RESCUEDATE) FROM PETRESCUE;
+--\*Here, the quantity in Number and in Date_element will combine to form the interval to be added to the date in the column. For the given question, the query would be:*\
+SELECT DATE_ADD(RESCUEDATE, INTERVAL 3 DAY) FROM PETRESCUE
+SELECT DATE_ADD(RESCUEDATE, INTERVAL 2 MONTH) FROM PETRESCUE
+--we can retrieve a date before the one given in the column by a given number using the function DATE_SUB. By modifying the same example, the following query would provide the date 3 days before the rescue.
+SELECT DATE_SUB(RESCUEDATE, INTERVAL 3 DAY) FROM PETRESCUE
+
+
+--DATEDIFF(Date_1, Date_2). This function calculates the difference between the two given dates and gives the output in number of days. For the given question, the query would be:
+SELECT DATEDIFF(CURRENT_DATE, RESCUEDATE) FROM PETRESCUE
+--FROM_DAYS(number_of_days)can be used. This function takes a number of days and returns the required formatted output. The query above would thus be modified to
+SELECT FROM_DAYS(DATEDIFF(CURRENT_DATE, RESCUEDATE)) FROM PETRESCUE
+--Write a query that displays the average cost of rescuing a single dog. Note that the cost per dog would not be the same in different instances.
+SELECT AVG(COST/QUANTITY) FROM PETRESCUE WHERE ANIMAL = 'Dog';
+--Write a query that displays the animal name in each rescue in uppercase without duplications.
+SELECT DISTINCT UCASE(ANIMAL) FROM PETRESCUE;
+--Write a query that displays all the columns from the PETRESCUE table where the animal(s) rescued are cats. Use cat in lowercase in the query.
+SELECT * FROM PETRESCUE WHERE LCASE(ANIMAL)=&quot;cat&quot;;
+--Write a query that displays the number of rescues in the 5th month.
+SELECT SUM(QUANTITY) FROM PETRESCUE WHERE MONTH(RESCUEDATE)=&quot;05&quot;;
+--The rescue shelter is supposed to find good homes for all animals within 1 year of their rescue. Write a query that displays the ID and the target date.
+SELECT ID, DATE_ADD(RESCUEDATE, INTERVAL 1 YEAR) FROM PETRESCUE;
+</sql><sql name="indian">--1. Write SQL query to sum all the funding AmountinUSD, where City location equals “Bengaluru”
+SELECT sum(AmountinUSD) AS TotalFunding FROM indian_startup_funding where CityLocation = 'Bengaluru';
+
+--2 Write SQL query to sort the table by startup name DESC
+SELECT * FROM indian_startup_funding order by StartupName DESC;
+
+--3. Write SQL query to sum all the funding AmountinUSD, where City location equals “Bengaluru” and AmountinUSD&gt;380000
+SELECT sum(AmountinUSD) AS TotalFunding FROM indian_startup_funding where CityLocation = 'Bengaluru' and AmountinUSD&gt;380000;
+
+--4. Write SQL query to get all CityLocations that has an AmountinUSD &gt;380000
+SELECT CityLocation ,AmountinUSD FROM indian_startup_funding where AmountinUSD &gt;380000 ;
+
+--5. Write SQL query to get only unique CityLocations that has an AmountinUSD &gt;380000
+select DISTINCT CityLocation FROM indian_startup_funding where AmountinUSD &gt;380000 ;
+
+--6. Write SQL query to get all StartupNames where AmountinUSD&lt;380000
+SELECT StartupName FROM indian_startup_funding where AmountinUSD &lt;380000 ;
+--7. Write SQL query to sort the output from the previous question DESC
+SELECT StartupName FROM indian_startup_funding where AmountinUSD &lt;380000 
+ORDER by StartupName DESC ;
+--8. Write SQL query to get the City location that has the maximum funding amount “Note that is the data is not cleaned properly you will get non logical result”
+select CityLocation from indian_startup_funding where AmountinUSD =(SELECT max(AmountinUSD) FROM indian_startup_funding);
+--9. Write SQL query to get the total funding AmountinUSD for each IndustryVertical
+Select IndustryVertical, sum(AmountinUSD) AS TotalFunding FROM indian_startup_funding group by IndustryVertical;
+
+--10. Write SQL query to get the total funding AmountinUSD for each IndustryVertical that starts with letter “A”
+Select IndustryVertical, sum(AmountinUSD) AS TotalFunding FROM indian_startup_funding  where 
+IndustryVertical like 'A%'
+ group by IndustryVertical;
+--11. Write SQL query to get the total funding AmountinUSD for each IndustryVertical that starts with letter “A” and sort the output DESC by the total AmountinUSD
+Select IndustryVertical, sum(AmountinUSD) AS TotalFunding 
+FROM indian_startup_funding  where IndustryVertical like 'A%'
+  group by IndustryVertical order by TotalFunding  DESC ;
+--12. Write SQL query to count all the start_ups in the Education field
+select  COUNT(*) AS StartupCount FROM indian_startup_funding  where IndustryVertical= 'Education';
+--13. Write SQL query to count all the start_Ups in the E-Commerce field
+select  COUNT(*) AS StartupCount FROM indian_startup_funding  where IndustryVertical= 'E-Commerce';
+--14. Write SQL query to count all the start_Ups in the E-Commerce field, where city location equals “Bengaluru”
+select count(*) AS StartupCount from indian_startup_funding where IndustryVertical= 'E-Commerce' AND CityLocation='Bengaluru';
+--15. For each Industry Vertical find the total funding amount
+select IndustryVertical,sum(AmountinUSD) AS TotalFunding from indian_startup_funding group by  IndustryVertical;
+--16. For each Industry Vertical find the total funding amount as “Total_fund” and the average funding amount as “Avg_Fund”. In this question provide two answer 1- using group by Industry Vertical, 2- using sub_queries
+--1 
+select IndustryVertical ,sum(AmountinUSD) AS TotalFund ,avg(AmountinUSD) as Average_Fund from indian_startup_funding
+group by IndustryVertical;
+--2
+
+--17. Write SQL query to get the minimum value of funding for the “Uniphore” start_up
+SELECT   MIN(AmountinUSD) AS Minimum_funding
+FROM indian_startup_funding WHERE  StartupName = 'Uniphore';
+   
+--18. Write SQL query to get the length of the city location names
+select CityLocation ,length(CityLocation) FROM indian_startup_funding ;
+--19. Write SQL query to convert start_ups names into uppercase if the funding amount is &gt;380,000
+SELECT 
+    CASE 
+        WHEN AmountinUSD &gt; 380000 THEN UPPER(StartupName)
+        ELSE StartupName
+    END AS StartupName
+FROM indian_startup_funding;
+20. Write SQL query to select distinct industry vertical names, knowing that names are mix of lowercase and uppercase values.
+select  distinct upper (IndustryVertical )from indian_startup_funding ;</sql><sql name="SQL 15">--Problem 1: Find the total number of crimes recorded in the CRIME table.
+select CASE_NUMBER ,count (*)as total_number_crimes from CHICAGO_CRIME_DATA ; 
+--Problem 2: List community areas with per capita income less than 11000.
+select COMMUNITY_AREA_NAME ,PER_CAPITA_INCOME FROM CENSUS_DATA where PER_CAPITA_INCOME&lt;11000;
+--Problem 3: List all case numbers for crimes involving minors?
+select CASE_NUMBER FROM CHICAGO_CRIME_DATA where description LIKE '%MINOR%';
+
+--Problem 4: List all kidnapping crimes involving a child?(children are not considered minors for the purposes of crime analysis)
+SELECT case_number FROM CHICAGO_CRIME_DATA WHERE primary_type = 'KIDNAPPING' AND description LIKE '%CHILD%';
+--5 Problem 5: What kind of crimes were recorded at schools?
+SELECT DISTINCT primary_type FROM CHICAGO_CRIME_DATA WHERE location_description LIKE '%SCHOOL%';
+
+--Problem 6: List the average safety score for all types of schools.
+SELECT ElementaryMiddleorHighSchool as School_Type, AVG(SAFETY_SCORE) AVERAGE_SAFETY_SCORE FROM CHICAGO_PUBLIC_SCHOOLS GROUP BY ElementaryMiddleorHighSchool;
+
+Problem --7: List 5 community areas with highest % of households below poverty line.
+SELECT COMMUNITY_AREA_NAME, PERCENT_HOUSEHOLDS_BELOW_POVERTY FROM CENSUS_DATA ORDER BY PERCENT_HOUSEHOLDS_BELOW_POVERTY DESC LIMIT 5 ;
+--Problem 8: Which community area(number) is most crime prone?
+SELECT COMMUNITY_AREA_NUMBER ,COUNT(COMMUNITY_AREA_NUMBER) AS FREQUENCY
+FROM CHICAGO_CRIME_DATA 
+GROUP BY COMMUNITY_AREA_NUMBER
+ORDER BY COUNT(COMMUNITY_AREA_NUMBER) DESC
+LIMIT 1;
+--Problem 9: Use a sub-query to find the name of the community area with highest hardship
+index.
+select COMMUNITY_AREA_NAME from CENSUS_DATA where HARDSHIP_INDEX= (SELECT MAX(HARDSHIP_INDEX) FROM CENSUS_DATA);
+--Problem 10: Use a sub-query to determine the Community Area Name with most number
+--of crimes?
+SELECT community_area_name FROM CENSUS_DATA 
+WHERE COMMUNITY_AREA_NUMBER = (SELECT COMMUNITY_AREA_NUMBER FROM CHICAGO_CRIME_DATA 
+    GROUP BY COMMUNITY_AREA_NUMBER
+    ORDER BY COUNT(COMMUNITY_AREA_NUMBER) DESC
+    LIMIT 1)
+LIMIT 1;
+
+--Problem 11: How many Elementary Schools are in the dataset?
+SELECT COUNT(*) FROM CHICAGO_PUBLIC_SCHOOLS WHERE ElementaryMiddleorHighSchool = 'ES';
+
+---Problem 12: Display total number of elementary, middle and high school
+--from Chicago_public_Schools
+SELECT ElementaryMiddleorHighSchool , count (*) as Totel_number
+FROM CHICAGO_PUBLIC_SCHOOLS GROUP by ElementaryMiddleorHighSchool ;
+--Problem 13: What is the highest Safety Score? #Which schools have highest Safety Score?
+SELECT 
+    MAX(safety_score) AS highest_safety_score
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS;
+
+--SELECT 
+ --   school_name,
+  --  safety_score
+--FROM 
+   -- CHICAGO_PUBLIC_SCHOOLS
+--WHERE 
+   -- safety_score = (SELECT MAendance column.
+
+UPDATE CHICAGO_PUBLIC_SCHOOLS 
+SET average_student_attendance = REPLACE(average_student_attendance, '%', '');
+
+--Problem 15: Which Schools have Average Student Attendance lower than 70%?
+SELECT  NAME_OF_SCHOOL, average_student_attendance
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS
+WHERE 
+    CAST(REPLACE(average_student_attendance, '%', '') AS FLOAT) &lt; 70.0;
+--Problem 16: Get the total College Enrollment for each Community Area.
+SELECT 
+    community_area_name,
+    SUM(college_enrollment) AS total_college_enrollment
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS
+GROUP BY 
+    community_area_name;
+--Problem 17: Get the 5 Community Areas with the least College Enrollment sorted in
+--ascending order
+SELECT 
+    community_area_name,
+    SUM(college_enrollment) AS total_college_enrollment
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS
+GROUP BY 
+    community_area_name
+ORDER BY 
+    total_college_enrollment ASC
+LIMIT 5;
+--Problem 18: Display total number of elementary, middle and high school from
+--Chicago_public_Schools
+
+SELECT 
+  ElementaryMiddleorHighSchool,
+    COUNT(*) AS num_schools
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS
+GROUP BY 
+    ElementaryMiddleorHighSchool
+
+--Problem 19: Display ZIPCodes from Chicago_Schools which are having more than 5
+--schools.
+SELECT  ZIP_Code, COUNT(*) AS num_schools
+FROM 
+    CHICAGO_PUBLIC_SCHOOLS
+GROUP BY ZIP_Code
+HAVING num_schools &gt; 5;
+--Problem 20: Get the hardship index for the community area which has the school with the
+--highest enrollment
+SELECT 
+    hardship_index
+FROM 
+    CENSUS_DATA
+WHERE 
+    community_area_number = (SELECT 
+                                 community_area_number 
+                             FROM 
+                                 CHICAGO_PUBLIC_SCHOOLS 
+                             ORDER BY 
+                                 college_enrollment DESC 
+                             LIMIT 1);
+--Problem 21: Display the type of crimes with less than 10 reported crimes for each category.
+SELECT 
+    primary_type
+FROM 
+    CHICAGO_CRIME_DATA
+GROUP BY 
+    primary_type
+HAVING 
+    COUNT(*) &lt; 10;
+--Problem 22 : Display the top 20 least reported types of crime. (Primary_type column
+SELECT 
+    primary_type,
+    COUNT(*) AS num_crimes
+FROM 
+    CHICAGO_CRIME_DATA
+GROUP BY 
+    primary_type
+ORDER BY 
+    num_crimes ASC
+LIMIT 20;</sql><sql name="Movie assigment data">--Add a new column movieage to the TABLE
+ALTER TABLE MovieAssignmentData
+ADD COLUMN movieage INTEGER;
+--Modify column in table
+--You can not use the ALTER TABLE statement to modify a column in SQLite. Instead you will need to rename the table, create a new table, and copy the data into the new table.
+
+--Delete a column color from the TABLE
+ALTER TABLE MovieAssignmentData
+DROP COLUMN color;
+--Rename table name tomovieData
+ALTER TABLE MovieAssignmentData
+RENAME TO movieData;
+-- ADD data to the new column that you have added
+UPDATE movieData
+SET movieage = &lt;value&gt;; -- Update &lt;value&gt; as per your requirement
+--Count the number of columns in a table
+PRAGMA table_info(movieData);
+--Delete the entire TABLE
+DROP TABLE movieData;
+
+--Delete the entire table with all the records
+DELETE FROM movieData;
+
+
+</sql><sql name="view creat tables">DROP TABLE IF EXISTS EMPLOYEES;
+DROP TABLE IF EXISTS JOB_HISTORY;
+DROP TABLE IF EXISTS JOBS;
+DROP TABLE IF EXISTS DEPARTMENTS;
+DROP TABLE IF EXISTS LOCATIONS;
+
+
+
+CREATE TABLE EMPLOYEES (
+                          EMP_ID CHAR(9) NOT NULL,
+                          F_NAME VARCHAR(15) NOT NULL,
+                          L_NAME VARCHAR(15) NOT NULL,
+                          SSN CHAR(9),
+                          B_DATE DATE,
+                          SEX CHAR,
+                          ADDRESS VARCHAR(30),
+                          JOB_ID CHAR(9),
+                          SALARY DECIMAL(10,2),
+                          MANAGER_ID CHAR(9),
+                          DEP_ID CHAR(9) NOT NULL,
+                          PRIMARY KEY (EMP_ID)
+                        );
+
+CREATE TABLE JOB_HISTORY (
+                            EMPL_ID CHAR(9) NOT NULL,
+                            START_DATE DATE,
+                            JOBS_ID CHAR(9) NOT NULL,
+                            DEPT_ID CHAR(9),
+                            PRIMARY KEY (EMPL_ID,JOBS_ID)
+                          );
+
+CREATE TABLE JOBS (
+                    JOB_IDENT CHAR(9) NOT NULL,
+                    JOB_TITLE VARCHAR(30) ,
+                    MIN_SALARY DECIMAL(10,2),
+                    MAX_SALARY DECIMAL(10,2),
+                    PRIMARY KEY (JOB_IDENT)
+                  );
+
+CREATE TABLE DEPARTMENTS (
+                            DEPT_ID_DEP CHAR(9) NOT NULL,
+                            DEP_NAME VARCHAR(15) ,
+                            MANAGER_ID CHAR(9),
+                            LOC_ID CHAR(9),
+                            PRIMARY KEY (DEPT_ID_DEP)
+                          );
+
+CREATE TABLE LOCATIONS (
+                          LOCT_ID CHAR(9) NOT NULL,
+                          DEP_ID_LOC CHAR(9) NOT NULL,
+                          PRIMARY KEY (LOCT_ID,DEP_ID_LOC)
+                        );
+</sql><sql name="view activity">CREATE VIEW EMPSALARY AS
+SELECT EMP_ID, F_NAME, L_NAME, B_DATE, SEX, SALARY
+FROM Employees_u;
+
+SELECT * FROM EMPSALARY;
+CREATE OR REPLACE VIEW EMPSALARY AS
+SELECT EMP_ID, F_NAME, L_NAME, B_DATE, SEX, JOB_TITLE,
+MIN_SALARY, MAX_SALARY
+FROM Employees_u, JOBS
+WHERE EMPLOYEES.JOB_ID = JOBS.JOB_IDENT;</sql><sql name="procusure">DELIMITER //
+CREATE PROCEDURE RETRIEVE_ALL()
+BEGIN
+   SELECT *  FROM PETSALE;
+END //
+DELIMITER ;</sql><sql name="create bank account">DROP TABLE IF EXISTS BankAccounts;
+
+
+CREATE TABLE BankAccounts (
+    AccountNumber VARCHAR(5) NOT NULL,
+    AccountName VARCHAR(25) NOT NULL,
+    Balance DECIMAL(8,2) CHECK(Balance&gt;=0) NOT NULL,
+    PRIMARY KEY (AccountNumber)
+    );
+
+
+    
+INSERT INTO BankAccounts VALUES
+('B001','Rose',300),
+('B002','James',1345),
+('B003','Shoe Shop',124200),
+('B004','Corner Shop',76000);
+
+-- Retrieve all records from the table
+
+SELECT * FROM BankAccounts;
+
+
+DROP TABLE IF EXISTS ShoeShop;
+
+
+CREATE TABLE ShoeShop (
+    Product VARCHAR(25) NOT NULL,
+    Stock INTEGER NOT NULL,
+    Price DECIMAL(8,2) CHECK(Price&gt;0) NOT NULL,
+    PRIMARY KEY (Product)
+    );
+
+INSERT INTO ShoeShop VALUES
+('Boots',11,200),
+('High heels',8,600),
+('Brogues',10,150),
+('Trainers',14,300);
+
+
+SELECT * FROM ShoeShop;
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE TRANSACTION_ROSE()
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+    START TRANSACTION;
+    UPDATE BankAccounts
+    SET Balance = Balance-200
+    WHERE AccountName = 'Rose';
+    UPDATE BankAccounts
+    SET Balance = Balance+200
+    WHERE AccountName = 'Shoe Shop';
+    UPDATE ShoeShop
+    SET Stock = Stock-1
+    WHERE Product = 'Boots';
+    UPDATE BankAccounts
+    SET Balance = Balance-300
+    WHERE AccountName = 'Rose';
+    COMMIT;
+END //
+DELIMITER ;
+
+-- it not work because balance of Rose: 100 &lt; Price of Trainers: 300 ,if one not work all Stored Procedures will not work
+CALL TRANSACTION_ROSE;
+SELECT * FROM BankAccounts;
+SELECT * FROM ShoeShop;
+
+DELIMITER //
+CREATE PROCEDURE TRANSACTION_JAMES()
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+    START TRANSACTION;
+    UPDATE BankAccounts
+    SET Balance = Balance-1200
+    WHERE AccountName = 'James';
+    UPDATE BankAccounts
+    SET Balance = Balance+1200
+    WHERE AccountName = 'Shoe Shop';
+    UPDATE ShoeShop
+    SET Stock = Stock-4
+    WHERE Product = 'Trainers';
+    UPDATE BankAccounts
+    SET Balance = Balance-150
+    WHERE AccountName = 'James';
+    COMMIT;
+END //
+DELIMITER ; 
+
+</sql><sql name="HR JOIN">
+DROP TABLE IF EXISTS EMPLOYEES;
+DROP TABLE IF EXISTS JOB_HISTORY;
+DROP TABLE IF EXISTS JOBS;
+DROP TABLE IF EXISTS DEPARTMENTS;
+DROP TABLE IF EXISTS LOCATIONS;
+
+CREATE TABLE EMPLOYEES (
+                            EMP_ID CHAR(9) NOT NULL, 
+                            F_NAME VARCHAR(15) NOT NULL,
+                            L_NAME VARCHAR(15) NOT NULL,
+                            SSN CHAR(9),
+                            B_DATE DATE,
+                            SEX CHAR,
+                            ADDRESS VARCHAR(30),
+                            JOB_ID CHAR(9),
+                            SALARY DECIMAL(10,2),
+                            MANAGER_ID CHAR(9),
+                            DEP_ID CHAR(9) NOT NULL,
+                            PRIMARY KEY (EMP_ID));
+                            
+  CREATE TABLE JOB_HISTORY (
+                            EMPL_ID CHAR(9) NOT NULL, 
+                            START_DATE DATE,
+                            JOBS_ID CHAR(9) NOT NULL,
+                            DEPT_ID CHAR(9),
+                            PRIMARY KEY (EMPL_ID,JOBS_ID));
+ 
+ CREATE TABLE JOBS (
+                            JOB_IDENT CHAR(9) NOT NULL, 
+                            JOB_TITLE VARCHAR(30),
+                            MIN_SALARY DECIMAL(10,2),
+                            MAX_SALARY DECIMAL(10,2),
+                            PRIMARY KEY (JOB_IDENT));
+
+CREATE TABLE DEPARTMENTS (
+                            DEPT_ID_DEP CHAR(9) NOT NULL, 
+                            DEP_NAME VARCHAR(15) ,
+                            MANAGER_ID CHAR(9),
+                            LOC_ID CHAR(9),
+                            PRIMARY KEY (DEPT_ID_DEP));
+
+CREATE TABLE LOCATIONS (
+                            LOCT_ID CHAR(9) NOT NULL,
+                            DEP_ID_LOC CHAR(9) NOT NULL,
+                            PRIMARY KEY (LOCT_ID,DEP_ID_LOC));
+                            </sql><sql name="HR JOIN ACTIVITES">SELECT E.F_NAME,E.L_NAME, JH.START_DATE 
+FROM EMPLOYEES as E 
+INNER JOIN JOB_HISTORY as JH 
+ON E.EMP_ID=JH.EMPL_ID 
+WHERE E.DEP_ID ='5';
+
+SELECT E.EMP_ID, E.L_NAME, E.DEP_ID, D.DEP_NAME
+FROM EMPLOYEES AS E 
+LEFT OUTER JOIN DEPARTMENTS AS D 
+ON E.DEP_ID=D.DEPT_ID_DEP;
+
+SELECT E.F_NAME, E.L_NAME, D.DEP_NAME
+FROM EMPLOYEES AS E
+LEFT OUTER JOIN DEPARTMENTS AS D
+ON E.DEP_ID = D.DEPT_ID_DEP 
+
+UNION
+
+SELECT E.F_NAME, E.L_NAME, D.DEP_NAME
+FROM EMPLOYEES AS E
+RIGHT OUTER JOIN DEPARTMENTS AS D
+ON E.DEP_ID=D.DEPT_ID_DEP ;
+
+
+select E.F_NAME,E.L_NAME, JH.START_DATE, J.JOB_TITLE 
+from EMPLOYEES as E 
+INNER JOIN JOB_HISTORY as JH on E.EMP_ID=JH.EMPL_ID 
+INNER JOIN JOBS as J on E.JOB_ID=J.JOB_IDENT
+where E.DEP_ID ='5';
+
+
+SELECT E.EMP_ID, E.L_NAME, E.DEP_ID, D.DEP_NAME
+FROM EMPLOYEES AS E
+LEFT OUTER JOIN DEPARTMENTS AS D
+ON E.DEP_ID = D.DEPT_ID_DEP
+AND YEAR(E.B_DATE) &lt; 1980;
+
+SELECT E.F_NAME, E.L_NAME, D.DEPT_ID_DEP, D.DEP_NAME
+FROM EMPLOYEES AS E
+LEFT OUTER JOIN DEPARTMENTS AS D
+ON E.DEP_ID=D.DEPT_ID_DEP AND E.SEX = 'M'
+
+UNION
+
+SELECT E.F_NAME, E.L_NAME, D.DEPT_ID_DEP, D.DEP_NAME
+from EMPLOYEES AS E
+RIGHT OUTER JOIN DEPARTMENTS AS D
+ON E.DEP_ID=D.DEPT_ID_DEP AND E.SEX = 'M';
+</sql><sql name="SQL 24">SELECT * FROM Hospital h JOIN Doctor d ON h.ID=d.HospitalID ;
+
+select * from Doctor
+select DocName,Speciality, salary FROM Doctor
+Exercise 4: Get a list of doctors from a given hospital
+
+SELECT DocName FROM Hospital h JOIN Doctor d ON h.ID=d.HospitalID ;
+UPDATE Doctor SET Exp = 8 WHERE DocName= &quot;Linda&quot;;
+
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;</sql><current_tab id="2"/></tab_sql></sqlb_project>
